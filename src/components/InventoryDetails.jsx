@@ -1,6 +1,14 @@
 import React from "react";
+import useFetch from "../useFetch";
 
-function InventoryDetails({ cylinders }) {
+function InventoryDetails() {
+  const { data, error, loading } = useFetch(`https://backend-inventory-sandy.vercel.app/inventories`);
+
+  if (loading) return <p>Loading inventory...</p>;
+  if (error) return <p style={{ color: "red" }}>Error fetching data: {error.message}</p>;
+
+  if (!Array.isArray(data)) return <p>No inventory data available.</p>;
+
   return (
     <div>
       <h3>Warehouse Summary</h3>
@@ -13,16 +21,14 @@ function InventoryDetails({ cylinders }) {
           </tr>
         </thead>
         <tbody>
-          {cylinders.map((cylinder) => (
+          {data.map((cylinder) => (
             <tr key={cylinder.id}>
               <td>
                 {cylinder.icon} {cylinder.name}
               </td>
               <td>{cylinder.full}</td>
               <td>{cylinder.empty}</td>
-
             </tr>
-            
           ))}
         </tbody>
       </table>
